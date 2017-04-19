@@ -1,3 +1,32 @@
+v3.2.1 (Apr 08, 2017)
+ -----------------------------
+ - Include Support tab in Theme Options Panel
+ - Fixed wrong background field constructor args in the Options Panel
+ 
+ Files updated:
+ - style.css
+ - functions.php
+ - theme-options.php
+ - options/support.php
+ - options/options.php 
+ - options/css/options.css
+ - options/js/clipboard.min.js
+ - options/js/help.js
+ - options/fields/background/field_background.php 
+ - options/fields/group/field_group.php 
+ 
+v3.2.0 (Apr 06, 2017)
+-----------------------------
+- Fixed WooCommerce v3.0.0 compatibility issues
+
+Files updated:
+- functions.php
+- style.css
+- options/google-typography/google-typography.php
+- woocommerce/archive-product.php
+- woocommerce/single-product.php
+
+
 v3.1.9 (Mar 06, 2017)
 -----------------------------
 - Removed breadcrumbs from static home page

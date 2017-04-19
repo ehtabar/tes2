@@ -126,7 +126,7 @@ if ( $logo_id ) {
 							<?php } ?>
 						</div>
 					<?php } ?>
-					<!-- <div id="secondary-navigation" class="secondary-navigation" role="navigation" itemscope itemtype="http://schema.org/SiteNavigationElement">
+					<div id="secondary-navigation" class="secondary-navigation" role="navigation" itemscope itemtype="http://schema.org/SiteNavigationElement">
 						<a href="#" id="pull" class="toggle-mobile-menu"><?php _e('Menu', 'schema' ); ?></a>
 						<?php if ( has_nav_menu( 'mobile' ) ) { ?>
 							<nav class="navigation clearfix">
@@ -152,7 +152,7 @@ if ( $logo_id ) {
 								<?php } ?>
 							</nav>
 						<?php } ?>
-					</div> -->         
+					</div>         
 				</div><!--.container-->
 			</div>
 		</header>

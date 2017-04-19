@@ -1014,6 +1014,12 @@ EOT;
 	 *
 	 */
 	function admin_scripts() {
+
+		$screen = get_current_screen();
+
+		if ( 'appearance_page_theme_options' !== $screen->id ) {
+			return;
+		}
 		
 		//Javascripts
 		wp_register_script('google-webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.4.2/webfont.js', false);

@@ -156,6 +156,9 @@ input.popup-colorpicker { width: 75px !important }
 .child-theme-list li mark { padding: 0 .4em; margin-right: 10px; }
 .nhp-opts-groups-accordion input,.nhp-opts-groups-accordion textarea { width: 100%; }
 .nhp-opts-groups-accordion .button.button-small.wp-picker-default { width: auto; }
+.mts-options-extra-tab-content { margin-top: 20px; border-top: 1px solid #eaeaeb; padding: 20px 20px 40px 30px; }
+#mts-debug-data-field { font-family: monospace }
+.mts-help-buttons { margin: 10px 0 }
 /*-[ RTL Support ]---------------*/
 .rtl #adminmenuback { right: 0; }
 .rtl #wpcontent, .rtl #wpfooter { margin-right: 180px; margin-left: 0; }

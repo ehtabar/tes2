@@ -268,7 +268,7 @@ class NHP_Options_background extends NHP_Options{
 			}
 
 			if (class_exists($field_class) && method_exists($field_class, 'enqueue')) {
-				$enqueue = new $field_class('', '', $this);
+				$enqueue = new $field_class(array(), '', $this);
 				$enqueue->enqueue();
 			}
 		}
