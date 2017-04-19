@@ -8,6 +8,17 @@ defined('ABSPATH') or die;
  *
  */
 require_once( dirname( __FILE__ ) . '/options/options.php' );
+
+/*
+ * 
+ * Add support tab
+ *
+ */
+if ( ! defined('MTS_THEME_WHITE_LABEL') || ! MTS_THEME_WHITE_LABEL ) {
+	require_once( dirname( __FILE__ ) . '/options/support.php' );
+	$mts_options_tab_support = MTS_Options_Tab_Support::get_instance();
+}
+
 /*
  * 
  * Custom function for filtering the sections array given by theme, good for child themes to override or add to the sections.

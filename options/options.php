@@ -379,7 +379,7 @@ class NHP_Options{
 						}//if
 				
 						if(class_exists($field_class) && method_exists($field_class, 'enqueue')){
-							$enqueue = new $field_class('','',$this);
+							$enqueue = new $field_class(array(),'',$this);
 							$enqueue->enqueue();
 						}//if
 						
@@ -783,10 +783,10 @@ class NHP_Options{
 							
 						}//if
 						
-						foreach($this->extra_tabs as $k => $tab){
-							$icon = (!isset($tab['icon']))?'<i class="fa fa-cogs" /> ':'<i class="'.$tab['icon'].'" /> ';
+						foreach($this->extra_tabs as $k => $section){
+							$icon = (!isset($section['icon']))?'<i class="fa fa-cogs"></i> ':'<i class="'.$section['icon'].'"></i> ';
 							echo '<li id="'.$k.'_section_group_li" class="nhp-opts-group-tab-link-li">';
-								echo '<a href="javascript:void(0);" id="'.$k.'_section_group_li_a" class="nhp-opts-group-tab-link-a custom-tab" data-rel="'.$k.'">'.$icon.$tab['title'].'</a>';
+								echo '<a href="javascript:void(0);" id="'.$k.'_section_group_li_a" class="nhp-opts-group-tab-link-a" data-rel="'.$k.'" title="'.$section['title'].'">'.$icon.'<span class="section_title">'.$section['title'].'</span></a>';
 							echo '</li>';
 						}
 
@@ -956,7 +956,8 @@ class NHP_Options{
 					foreach($this->extra_tabs as $k => $tab){
 						echo '<div id="'.$k.'_section_group'.'" class="nhp-opts-group-tab">';
 						echo '<h2>'.$tab['title'].'</h2>';
-						echo $tab['content'];
+						echo '<div class="nhp-opts-section-desc">'.$tab['desc'].'</div>';
+						call_user_func( $tab['callback'] );
 						echo '</div>';
 					}
 
